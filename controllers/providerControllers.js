@@ -5,12 +5,13 @@ const messages = require('../messages/index');
 const md5 = require('md5');
 const config = require('../config');
 const jwt = require('jsonwebtoken');
+const result = require('../middleware/result');
 
 /* เข้าสู่ระบบ */
 exports.login = async (req, res, next) => {
     try {
         const { username, password } = req.body;
-      
+
         const model = {
             username: username,
         }
@@ -20,10 +21,10 @@ exports.login = async (req, res, next) => {
         //decode วันหมดอายุ
         const expires_in = jwt.decode(token);
 
-        res.status(200).json({
+        result(res, {
             access_token: token,
             expires_in: expires_in.exp
-        });
+        })
 
     } catch (error) {
         next(error);

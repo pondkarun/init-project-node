@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
+const upload = require("express-fileupload");
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
@@ -14,12 +15,14 @@ require('./cron')
 
 const indexRouter = require('./routes/index');
 const providerRouter = require('./routes/provider');
+const uploadRouter = require('./routes/upload');
 
 const app = express();
 
 app.use(cors());
 app.use(helmet());
 app.use(paginate.middleware(10, 50));
+app.use(upload())
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -33,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/provider', providerRouter);
+app.use('/upload', uploadRouter);
 
 swagger.serveSwagger(app, "/api", options, {
   routePath: "./routes/",
